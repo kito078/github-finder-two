@@ -1,20 +1,23 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import UserItem from "./UserItem";
+import GithubContext from "../../context/GithubContext";
 
 function UserResults() {
-  useEffect(() => {
-    getUser();
-  }, []);
-  const getUser = async () => {
-    const response = await fetch(`${process.env.REACT_GITHUB_URL}/users`, {
-      headers: {
-        Authorization: `token ${process.env.REACT_GITHUB_TOKEN}`,
-      },
-    });
+  const [loading, setLoading] = useState(true);
 
-    const data = await response.json();
-    console.log(data);
-  };
-  return <div></div>;
+  const { users, getUsers } = useContext(GithubContext);
+  console.log(users);
+  if (!loading) {
+    return (
+      <div className="grid grid-cols-1 gap-8 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2">
+        {users.map((user) => (
+          <UserItem key={user.id} user={user} />
+        ))}
+      </div>
+    );
+  } else {
+    <div>Loading...</div>;
+  }
 }
 
 export default UserResults;
